@@ -10,6 +10,9 @@ import Vant from 'vant'
 // 引入组件样式
 import 'vant/lib/index.css'
 
+// 权限管理
+import '@/permission'
+
 createApp(App).use(Router).use(Vant).mount('#app')
 
 // 前置路由守卫
