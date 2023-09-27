@@ -59,8 +59,8 @@
 <script setup>
 import { reactive } from 'vue'
 import { showNotify } from 'vant'
-import { POST } from '@/services/request'
 import { useRouter } from 'vue-router'
+import Api from '@/api/index'
 
 const Router = useRouter()
 const state = reactive({
@@ -106,10 +106,7 @@ const onSubmit = async () => {
     password: state.password
   }
 
-  let result = await POST({
-    url: '/business/base/register',
-    params: data
-  })
+  let result = await Api.register(data)
 
   if (result.code === 0) {
     showNotify({
