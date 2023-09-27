@@ -1,5 +1,3 @@
 <template>
-    <div>
-        修改资料
-    </div>
+  <div>修改资料</div>
 </template>

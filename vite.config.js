@@ -8,9 +8,9 @@ import path from 'path'
 export default defineConfig({
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-      "components": path.resolve(__dirname, "src/components"),
-      'vue': 'vue/dist/vue.esm-bundler.js' // 定义vue的别名，如果使用其他的插件，可能会用到别名
+      '@': path.resolve(__dirname, 'src'),
+      components: path.resolve(__dirname, 'src/components'),
+      vue: 'vue/dist/vue.esm-bundler.js' // 定义vue的别名，如果使用其他的插件，可能会用到别名
       // "styles": path.resolve(__dirname, "src/styles"),
       // "plugins": path.resolve(__dirname, "src/plugins"),
       // "views": path.resolve(__dirname, "src/views"),
@@ -18,7 +18,7 @@ export default defineConfig({
       // "utils": path.resolve(__dirname, "src/utils"),
       // "apis": path.resolve(__dirname, "src/apis"),
       // "dirs": path.resolve(__dirname, "src/directives"),
-    },
+    }
   },
-  plugins: [vue()],
+  plugins: [vue()]
 })
