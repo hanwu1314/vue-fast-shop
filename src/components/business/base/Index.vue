@@ -1,9 +1,11 @@
 <template>
   <div class="myBox">
-    <div class="L"><img src="/assets/images/01.jpg" /></div>
+    <div class="L"><img :src="state.business.avatar_cdn" /></div>
     <div class="C">
-      <div class="tit">李莉</div>
-      <div class="sub">lili*********</div>
+      <div class="tit">
+        {{ state.business.nickname ? state.business.nickname : '未设置昵称' }}
+      </div>
+      <div class="sub">{{ state.business.mobile_text }}</div>
     </div>
     <div class="R"><img src="/assets/images/go.png" /></div>
   </div>
@@ -13,7 +15,7 @@
     <p>基本资料</p>
     <img src="/assets/images/go.png" />
   </div>
-  <div class="myboxcon">
+  <div class="myboxcon" v-if="state.business.auth == 0 && state.business.email">
     <p>邮箱认证</p>
     <img src="/assets/images/go.png" />
   </div>
@@ -33,7 +35,7 @@
     <p>充值记录</p>
     <img src="/assets/images/go.png" />
   </div>
-  <div class="myboxcon">
+  <div class="myboxcon" @click="onLogout">
     <p>注销</p>
     <img src="/assets/images/go.png" />
   </div>
@@ -46,4 +48,27 @@
 </template>
 <script setup>
 import Footer from 'components/common/Footer.vue'
+import { reactive } from 'vue'
+import { useCookies } from 'vue3-cookies'
+import { showConfirmDialog } from 'vant'
+import { useRouter } from 'vue-router'
+
+const { cookies } = useCookies()
+const Router = useRouter()
+const state = reactive({
+  business: cookies.get('business')
+})
+
+const onLogout = () => {
+  showConfirmDialog({
+    title: '退出账号',
+    message: '是否确认退出当前账号？'
+  })
+    .then(() => {
+      cookies.remove('business')
+
+      Router.push('/business/base/login')
+    })
+    .catch(() => {})
+}
 </script>
