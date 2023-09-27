@@ -4,7 +4,7 @@
       class="container-login100"
       style="background-image: url('/assets/images/img-01.jpg')">
       <div class="wrap-login100 p-t-190 p-b-30">
-        <form class="login100-form validate-form">
+        <van-form class="login100-form validate-form" @submit="onSubmit">
           <div class="login100-form-avatar">
             <img src="/assets/images/avatar-01.jpg" alt="AVATAR" />
           </div>
@@ -13,12 +13,12 @@
 
           <div
             class="wrap-input100 validate-input m-b-10"
-            data-validate="请输入用户名">
+            data-validate="请输入手机号">
             <input
               class="input100"
               type="text"
-              name="username"
-              placeholder="用户名"
+              v-model="state.mobile"
+              placeholder="手机号"
               autocomplete="off" />
             <span class="focus-input100"></span>
             <span class="symbol-input100">
@@ -32,7 +32,7 @@
             <input
               class="input100"
               type="password"
-              name="pass"
+              v-model="state.password"
               placeholder="密码" />
             <span class="focus-input100"></span>
             <span class="symbol-input100">
@@ -50,11 +50,90 @@
               <i class="fa fa-long-arrow-right"></i>
             </router-link>
           </div>
-        </form>
+        </van-form>
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+import { reactive } from 'vue'
+import Api from '@/api/index'
+import { useCookies } from 'vue3-cookies'
+import { showNotify } from 'vant'
+import { useRouter } from 'vue-router'
+
+const { cookies } = useCookies()
+const Router = useRouter()
+const state = reactive({
+  mobile: '13100000000',
+  password: '123456'
+})
+
+const onSubmit = async () => {
+  if (!state.mobile.trim()) {
+    showNotify({
+      type: 'warning',
+      message: '请输入手机号',
+      duration: 1500
+    })
+
+    return
+  }
+
+  let mobileReg = /^1[3,4,5,6,7,8,9][0-9]{9}$/
+
+  if (!mobileReg.test(state.mobile)) {
+    showNotify({
+      type: 'warning',
+      message: '输入手机号格式错误',
+      duration: 1500
+    })
+
+    return
+  }
+
+  if (!state.password.trim()) {
+    showNotify({
+      type: 'warning',
+      message: '请输入密码',
+      duration: 1500
+    })
+
+    return
+  }
+
+  let data = {
+    mobile: state.mobile,
+    password: state.password
+  }
+
+  let result = await Api.login(data)
+
+  if (result.code === 1) {
+    showNotify({
+      type: 'success',
+      message: result.msg,
+      duration: 1500,
+      onClose: () => {
+        cookies.set('business', result.data)
+
+        Router.push('/business/base/index')
+      }
+    })
+
+    return
+  } else {
+    showNotify({
+      type: 'warning',
+      message: result.msg,
+      duration: 1500
+    })
+
+    return
+  }
+}
+</script>
 
 <style>
 @import url('/assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css');
