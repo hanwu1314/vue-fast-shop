@@ -20,5 +20,17 @@ export default defineConfig({
       // "dirs": path.resolve(__dirname, "src/directives"),
     }
   },
+  server: {
+    proxy: {
+      '/shop': {
+        target: 'http://fast.com/shop',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/shop/, '')
+      }
+    },
+    hmr: {
+      overlay: false
+    }
+  },
   plugins: [vue()]
 })
