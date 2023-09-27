@@ -14,11 +14,18 @@ Object.values(ModulesFile).map(async (mod) => {
   }
 })
 
-RouterList.push({
-  path: '/',
-  name: 'Home',
-  component: () => import('components/Home.vue')
-})
+RouterList.push(
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import('components/Home.vue')
+  },
+  // 添加404路由
+  {
+    path: '/:catchAll(.*)',
+    component: () => import('components/NotFound.vue')
+  }
+)
 
 export default createRouter({
   history: createWebHistory(),
