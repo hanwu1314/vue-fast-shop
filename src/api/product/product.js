@@ -6,5 +6,11 @@ export default {
       url: '/product/product/index',
       params: data
     })
+  },
+  ProductInfo(data = {}) {
+    return POST({
+      url: '/product/product/info',
+      params: data
+    })
   }
 }
