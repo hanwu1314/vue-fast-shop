@@ -11,7 +11,7 @@
   </div>
   <div class="clear"></div>
   <div class="allkbox"></div>
-  <div class="myboxcon" @click="onProfile">
+  <div class="myboxcon" @click="goProfile">
     <p>基本资料</p>
     <img src="/assets/images/go.png" />
   </div>
@@ -19,7 +19,7 @@
     <p>邮箱认证</p>
     <img src="/assets/images/go.png" />
   </div>
-  <div class="myboxcon">
+  <div class="myboxcon" @click="goAddress">
     <p>我的收货地址</p>
     <img src="/assets/images/go.png" />
   </div>
@@ -59,8 +59,12 @@ const state = reactive({
   business: cookies.get('business')
 })
 
-const onProfile = () => {
+const goProfile = () => {
   Router.push('/business/base/profile')
+}
+
+const goAddress = () => {
+  Router.push('/business/address/index')
 }
 
 const onLogout = () => {
