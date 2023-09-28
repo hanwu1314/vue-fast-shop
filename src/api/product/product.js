@@ -12,5 +12,11 @@ export default {
       url: '/product/product/info',
       params: data
     })
+  },
+  ProductCollection(data = {}) {
+    return POST({
+      url: '/product/product/collection',
+      params: data
+    })
   }
 }

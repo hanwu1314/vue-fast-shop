@@ -124,8 +124,6 @@ const avatar = ref([
 ])
 
 const onSubmit = async (values) => {
-  console.log(values)
-
   let data = {
     id: business.value.id,
     nickname: values.nickname,

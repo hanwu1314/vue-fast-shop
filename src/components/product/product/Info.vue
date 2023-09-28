@@ -15,10 +15,11 @@
 
   <div class="detailbox">
     <h4>{{ info.name }}</h4>
-    <div class="price"><em>￥</em>{{ info.price }}<font>已售500件</font></div>
+    <div class="price">
+      <em>￥</em>{{ info.price }}<span id="sold">已售500件</span>
+    </div>
   </div>
 
-  <!-- v-html => 解析html的 v-text => 文本 -->
   <div class="detailbox_2" v-html="info.content"></div>
 
   <van-action-bar>
@@ -27,7 +28,8 @@
     <van-action-bar-icon
       :icon="info.collection_status === true ? 'star' : 'star-o'"
       :text="info.collection_status === true ? '已收藏' : '收藏'"
-      :color="info.collection_status === true ? '#ff5000' : ''" />
+      :color="info.collection_status === true ? '#ff5000' : ''"
+      @click="onCollection" />
     <van-action-bar-button type="warning" text="加入购物车" />
     <van-action-bar-button type="danger" text="立即购买" />
   </van-action-bar>
@@ -48,11 +50,39 @@ const id = ref(Route.query.id)
 const info = ref({})
 const business = ref(cookies.get('business') ? cookies.get('business') : {})
 
-console.log(business.value)
-
 onMounted(() => {
   getInfo()
 })
+
+const onCollection = async () => {
+  if (!business.value || JSON.stringify(business.value) === '{}') {
+    showNotify({
+      type: 'warning',
+      message: '请先登录',
+      duration: 1500
+    })
+    Router.push('/business/base/login')
+    return
+  }
+
+  let data = {
+    busid: business.value.id,
+    proid: id.value
+  }
+
+  let result = Api.ProductCollection(data)
+
+  if (result.code === 0) {
+    showNotify({
+      type: 'warning',
+      message: result.msg,
+      duration: 1500
+    })
+    return
+  }
+
+  info.value.collection_status = !info.value.collection_status
+}
 
 const getInfo = async () => {
   let result = await Api.ProductInfo({ id: id.value, busid: business.value.id })
@@ -77,3 +107,13 @@ const onClickLeft = () => {
   Router.back()
 }
 </script>
+<style>
+#sold {
+  float: right;
+  color: #b7b7bf;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 30px;
+  text-decoration: auto;
+}
+</style>
