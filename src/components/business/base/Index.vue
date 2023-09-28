@@ -11,7 +11,7 @@
   </div>
   <div class="clear"></div>
   <div class="allkbox"></div>
-  <div class="myboxcon">
+  <div class="myboxcon" @click="onProfile">
     <p>基本资料</p>
     <img src="/assets/images/go.png" />
   </div>
@@ -58,6 +58,10 @@ const Router = useRouter()
 const state = reactive({
   business: cookies.get('business')
 })
+
+const onProfile = () => {
+  Router.push('/business/base/profile')
+}
 
 const onLogout = () => {
   showConfirmDialog({
