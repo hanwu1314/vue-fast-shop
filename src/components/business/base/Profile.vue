@@ -38,6 +38,7 @@
       <van-field
         v-model="business.email"
         name="email"
+        type="email"
         label="邮箱"
         placeholder="邮箱"
         colon
@@ -53,7 +54,7 @@
         colon
         label-align="right" />
 
-      <van-field name="radio" label="性别" colon label-align="right">
+      <van-field name="gender" label="性别" colon label-align="right">
         <template #input>
           <van-radio-group v-model="business.gender" direction="horizontal">
             <van-radio name="0">保密</van-radio>
@@ -91,7 +92,7 @@
     <van-area
       title="地区选择"
       :area-list="areaList"
-      v-model="business.district"
+      v-model="RegionCode"
       @confirm="onConfirm"
       @cancel="showArea = false" />
   </van-popup>
@@ -102,20 +103,93 @@ import { useRouter } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
 import { ref } from 'vue'
 import { areaList } from '@vant/area-data'
+import Api from '@/api/index'
+import { showNotify } from 'vant'
 
 const Router = useRouter()
 const { cookies } = useCookies()
 const business = ref(cookies.get('business'))
 const showArea = ref(false)
+const RegionCode = ref(
+  business.value.district
+    ? business.value.district
+    : business.value.city
+    ? business.value.city
+    : business.value.province
+)
 const avatar = ref([
   {
     url: business.value.avatar_cdn
   }
 ])
 
-const onSubmit = () => {}
+const onSubmit = async (values) => {
+  console.log(values)
 
-const onConfirm = () => {}
+  let data = {
+    id: business.value.id,
+    nickname: values.nickname,
+    email: values.email,
+    gender: values.gender
+  }
+
+  if (values.password.trim()) {
+    data.password = values.password
+  }
+
+  if (RegionCode.value) {
+    data.code = RegionCode.value
+  }
+
+  if (values.avatar[0]?.file) {
+    data.avatar = values.avatar[0].file
+  }
+
+  let result = await Api.profile(data)
+
+  if (result.code === 1) {
+    showNotify({
+      type: 'success',
+      message: result.msg,
+      duration: 1500,
+      onClose: () => {
+        Router.push('/business/base/index')
+      }
+    })
+
+    return
+  } else {
+    showNotify({
+      type: 'warning',
+      message: result.msg,
+      duration: 1500
+    })
+
+    return
+  }
+}
+
+const onConfirm = (values) => {
+  showArea.value = false
+
+  let [province, city, district] = values.selectedOptions
+
+  let region_text = ''
+
+  if (province.value) {
+    region_text = province.text + '-'
+  }
+
+  if (city.value) {
+    region_text += city.text + '-'
+  }
+
+  if (district.value) {
+    region_text += district.text
+  }
+
+  business.value.region_text = region_text
+}
 
 const onClickLeft = () => {
   Router.back()
