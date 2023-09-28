@@ -11,98 +11,36 @@
   </div>
   <div class="clear"></div>
   <div class="aui-m-slider">
-    <div class="m-slider" data-ydui-slider>
-      <div class="slider-wrapper">
-        <div class="slider-item">
-          <a href="javascript:;"> <img src="/assets/images/banner.jpg" /> </a>
-        </div>
-        <div class="slider-item">
-          <a href="javascript:;"> <img src="/assets/images/banner.jpg" /> </a>
-        </div>
-        <div class="slider-item">
-          <a href="javascript:;"> <img src="/assets/images/banner.jpg" /> </a>
-        </div>
-        <div class="slider-item">
-          <a href="javascript:;"> <img src="/assets/images/banner.jpg" /> </a>
-        </div>
-      </div>
-      <div class="slider-pagination"></div>
-    </div>
+    <van-swipe :autoplay="3000" lazy-render>
+      <van-swipe-item v-for="item in state.recommendList" :key="item.id">
+        <router-link
+          :to="{ path: '/product/product/info', query: { id: item.id } }">
+          <img :src="item.thumb_cdn" />
+        </router-link>
+      </van-swipe-item>
+    </van-swipe>
   </div>
   <div class="clear"></div>
   <div class="lqgwBox">
-    <div class="titbox">先领券/再购物</div>
-    <div class="img"><img src="/assets/images/1.jpg" /></div>
     <ul>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_1.png" />
-          <p>桌子</p>
-        </a>
-      </li>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_2.png" />
-          <p>椅子</p>
-        </a>
-      </li>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_3.png" />
-          <p>抽屉</p>
-        </a>
-      </li>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_4.png" />
-          <p>沙发</p>
-        </a>
-      </li>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_5.png" />
-          <p>灯饰</p>
-        </a>
-      </li>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_6.png" />
-          <p>柜子</p>
-        </a>
-      </li>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_7.png" />
-          <p>电视柜</p>
-        </a>
-      </li>
-      <li>
-        <a href="list.html"
-          ><img src="/assets/images/icon_8.png" />
-          <p>床</p>
-        </a>
+      <li v-for="item in state.TypeList" :key="item.id">
+        <router-link
+          :to="{ path: '/product/product/index', query: { id: item.id } }">
+          <img :src="item.thumb_cdn" />
+          <p>{{ item.name }}</p>
+        </router-link>
+
+        <!-- <router-link
+          :to="{ path: '/product/product/index', query: { typeid: item.id } }">
+          <img :src="item.thumb_cdn" />
+          <p>{{ item.name }}</p>
+        </router-link> -->
       </li>
     </ul>
   </div>
   <div class="clear"></div>
-  <div class="ljgqBox">
-    <div class="L"><img src="/assets/images/2.jpg" /></div>
-    <div class="R">
-      <ul>
-        <li>
-          <div class="bg1"></div>
-          <div class="pri_1">￥1899</div>
-        </li>
-        <li>
-          <div class="bg2"></div>
-          <div class="pri_2">￥2899</div>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="clear"></div>
   <div class="contitbox">
-    <p>新品<span>•</span>推荐</p>
+    <p>新品</p>
   </div>
   <div class="clear"></div>
   <ul class="proul">
@@ -140,40 +78,8 @@
     </li>
   </ul>
   <div class="clear"></div>
-  <div class="adBox">
-    <img src="/assets/images/banner.jpg" />
-  </div>
-  <div class="clear"></div>
-  <div class="liBox">
-    <div class="liBox_1">
-      <div class="L">
-        <a href="detail.html">
-          <div class="bg"></div>
-          <div class="tip">礼1</div>
-        </a>
-      </div>
-      <div class="R">
-        <a href="detail.html"><img src="/assets/images/9.jpg" /></a>
-      </div>
-    </div>
-    <div class="liBox_2">
-      <div class="L">
-        <a href="detail.html">
-          <div class="bg"></div>
-          <div class="tip">礼2</div>
-        </a>
-      </div>
-      <div class="R">
-        <a href="detail.html">
-          <div class="bg"></div>
-          <div class="tip">礼3</div>
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="clear"></div>
   <div class="contitbox">
-    <p>热销<span>•</span>单品</p>
+    <p>热销</p>
   </div>
   <div class="clear"></div>
   <ul class="proul_2">
@@ -235,10 +141,26 @@
 
 <script setup>
 import Footer from './common/Footer.vue'
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import Api from '@/api/index'
 
 const Router = useRouter()
 
-const state = reactive({})
+const state = reactive({
+  recommendList: [],
+  TypeList: []
+})
+
+onMounted(() => {
+  getData()
+})
+
+const getData = async () => {
+  let result = await Api.HomeIndex()
+
+  state.recommendList = result.data.recommendList
+
+  state.TypeList = result.data.TypeList
+}
 </script>
