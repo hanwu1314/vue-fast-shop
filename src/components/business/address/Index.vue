@@ -97,7 +97,14 @@ const onAdd = () => {
   Router.push('/business/address/add')
 }
 
-const onEdit = () => {}
+const onEdit = (item) => {
+  Router.push({
+    path: '/business/address/edit',
+    query: {
+      id: item.id
+    }
+  })
+}
 
 const onClickLeft = () => {
   Router.back()

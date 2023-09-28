@@ -27,7 +27,7 @@ export default {
   },
   AddressInfo(data = {}) {
     return POST({
-      url: '/business/address/edit',
+      url: '/business/address/info',
       params: data
     })
   },
