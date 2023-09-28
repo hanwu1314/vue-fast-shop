@@ -1,21 +1,37 @@
 <template>
+  <!-- <van-search
+    v-model="value"
+    show-action
+    placeholder="请输入搜索关键词"
+    @search="onSearch">
+    <template #action>
+      <div @click="onClickButton">搜索</div>
+    </template>
+  </van-search> -->
   <van-nav-bar
     title="标题"
     left-text="返回"
     left-arrow
+    right-text="搜索"
     @click-left="onClickLeft"
+    @click-right="onSearch"
     fixed>
     <template #title>
-      <van-search v-model="search" placeholder="请输入搜索关键词" />
+      <van-search
+        v-model="search"
+        @search="onSearch"
+        placeholder="请输入搜索关键词" />
     </template>
   </van-nav-bar>
-
   <div class="hbox"></div>
 
   <div class="shopType">
     <van-dropdown-menu>
-      <van-dropdown-item v-model="flag" :options="flagList" />
-      <van-dropdown-item v-model="OrderBy" :options="OrderByList" />
+      <van-dropdown-item v-model="flag" :options="flagList" @change="onFlag" />
+      <van-dropdown-item
+        v-model="OrderBy"
+        :options="OrderByList"
+        @change="onOrderBy" />
     </van-dropdown-menu>
   </div>
 
@@ -91,11 +107,13 @@ const onLoad = () => {
 
   if (refreshing.value) {
     list.value = []
+    setTimeout(() => {
+      refreshing.value = false
+    }, 1500)
   }
 
   setTimeout(() => {
     getProductData()
-    refreshing.value = false
   }, 1500)
 }
 
@@ -131,6 +149,18 @@ const getProductData = async () => {
       finished.value = true
     }
   }
+}
+
+const onFlag = () => {
+  onRefresh()
+}
+
+const onOrderBy = () => {
+  onRefresh()
+}
+
+const onSearch = () => {
+  onRefresh()
 }
 
 const onRefresh = () => {
