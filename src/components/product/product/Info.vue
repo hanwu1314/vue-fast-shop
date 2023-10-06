@@ -24,13 +24,13 @@
 
   <van-action-bar>
     <van-action-bar-icon icon="chat-o" text="客服" color="#ee0a24" />
-    <van-action-bar-icon icon="cart-o" text="购物车" />
+    <van-action-bar-icon icon="cart-o" text="购物车" :badge="CartCount" />
     <van-action-bar-icon
       :icon="info.collection_status === true ? 'star' : 'star-o'"
       :text="info.collection_status === true ? '已收藏' : '收藏'"
       :color="info.collection_status === true ? '#ff5000' : ''"
       @click="onCollection" />
-    <van-action-bar-button type="warning" text="加入购物车" />
+    <van-action-bar-button type="warning" text="加入购物车" @click="onAdd" />
     <van-action-bar-button type="danger" text="立即购买" />
   </van-action-bar>
 </template>
@@ -39,7 +39,7 @@
 import { useRouter, useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import Api from '@/api/index'
-import { showNotify } from 'vant'
+import { showConfirmDialog, showNotify } from 'vant'
 import { useCookies } from 'vue3-cookies'
 
 const Router = useRouter()
@@ -50,9 +50,52 @@ const id = ref(Route.query.id)
 const info = ref({})
 const business = ref(cookies.get('business') ? cookies.get('business') : {})
 
+const CartCount = ref(0)
+
 onMounted(() => {
   getInfo()
 })
+
+const onAdd = async () => {
+  if (!business.value || JSON.stringify(business.value) === '{}') {
+    showNotify({
+      type: 'warning',
+      message: '请先登录',
+      duration: 1500
+    })
+
+    return
+  }
+
+  let data = {
+    proid: id.value,
+    busid: business.value.id
+  }
+
+  let result = await Api.CartAdd(data)
+
+  if (result.code === 0) {
+    showNotify({
+      type: 'warning',
+      message: result.msg,
+      duration: 1500
+    })
+
+    return
+  }
+
+  getInfo()
+
+  showConfirmDialog({
+    title: result.msg,
+    message: '是否需要跳转购物车进行结算？'
+  })
+    .then(() => {
+      cookies.set('cartStatus', true)
+      Router.push('/product/cart/index')
+    })
+    .catch(() => {})
+}
 
 const onCollection = async () => {
   if (!business.value || JSON.stringify(business.value) === '{}') {
@@ -100,7 +143,9 @@ const getInfo = async () => {
     return
   }
 
-  info.value = result.data
+  info.value = result.data.product
+
+  CartCount.value = result.data.CartCount
 }
 
 const onClickLeft = () => {

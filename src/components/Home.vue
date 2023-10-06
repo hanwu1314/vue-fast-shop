@@ -3,8 +3,7 @@
     <div class="L"><a href="index.html">LOGO</a></div>
     <div class="C">
       <div class="saerchbox">
-        <input name="" type="text" placeholder="请输入您要搜索的内容" /><img
-          src="/assets/images/ss.png" />
+        <input name="" type="text" placeholder="请输入您要搜索的内容" /><img src="/assets/images/ss.png" />
       </div>
     </div>
     <div class="R"><img src="/assets/images/tr.png" /></div>
@@ -13,8 +12,7 @@
   <div class="aui-m-slider">
     <van-swipe :autoplay="3000" lazy-render>
       <van-swipe-item v-for="item in state.recommendList" :key="item.id">
-        <router-link
-          :to="{ path: '/product/product/info', query: { id: item.id } }">
+        <router-link :to="{ path: '/product/product/info', query: { id: item.id } }">
           <img :src="item.thumb_cdn" />
         </router-link>
       </van-swipe-item>
@@ -24,17 +22,10 @@
   <div class="lqgwBox">
     <ul>
       <li v-for="item in state.TypeList" :key="item.id">
-        <router-link
-          :to="{ path: '/product/product/index', query: { id: item.id } }">
+        <router-link :to="{ path: '/product/product/index', query: { id: item.id } }">
           <img :src="item.thumb_cdn" />
           <p>{{ item.name }}</p>
         </router-link>
-
-        <!-- <router-link
-          :to="{ path: '/product/product/index', query: { typeid: item.id } }">
-          <img :src="item.thumb_cdn" />
-          <p>{{ item.name }}</p>
-        </router-link> -->
       </li>
     </ul>
   </div>
